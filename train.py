@@ -18,16 +18,25 @@ val_generator = train_datagen.flow_from_directory(directory=val_dir,target_size=
 
 # load VVG19 architecture
 vgg19 = VGG19(weights='imagenet', include_top=False, input_shape=(128, 128, 3))
+for layer in vgg19.layers:
+    layer.trainable = False
+
 
 # build the model architecture and add some layers
 model = Sequential()
 model.add(vgg19)
 model.add(Flatten())
-model.add(Dense(100, activation='relu'))
+model.add(Dense(128, activation='relu'))
+model.add (Dense(64,activation='relu'))
+model.add (Dense(32,activation='relu'))
+model.add (Dense(16,activation='relu'))
+model.add (Dense(8,activation='relu'))
+model.add (Dense(4,activation='relu'))
 model.add(Dense(2,activation='softmax'))
 model.summary()
 model.compile(optimizer="adam",loss="categorical_crossentropy",metrics ="accuracy")
 history = model.fit_generator(generator=train_generator,
-                              epochs=20,validation_data=val_generator,
+                              epochs=20,validation_data=val_generator
                               )
+
 model.save('masknet.h5')
